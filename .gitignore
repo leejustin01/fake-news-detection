@@ -211,3 +211,4 @@ eda/
 pytorch_practice/
 .venv/
 .DS_Store
+pyrightconfig.json
