@@ -1,5 +1,5 @@
 import numpy as np
-from nn import ShallowNetwork
+from models.nn import ShallowNetwork
 import torch.nn as nn
 
 X_train = np.load("./data/processed/X_train.npy")

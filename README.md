@@ -18,8 +18,8 @@ This project is part of an exploration into NLP-based misinformation detection.
 
 ## Dataset
 
-- Fake and Real News Dataset (Kaggle)  
-  https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset
+Fake and Real News Dataset (Kaggle):  
+https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset
 
 The dataset consists of two CSV files containing labeled fake and real news articles.
 
@@ -29,6 +29,10 @@ The dataset consists of two CSV files containing labeled fake and real news arti
 2. Generate embeddings using SBERT  
 3. Train a classifier on the embeddings  
 4. Predict label and confidence for unseen articles  
+
+
+For a detailed explanation of the methods and analysis, see [Methods](docs/methods.md).
+
 
 ## Running the Project
 
