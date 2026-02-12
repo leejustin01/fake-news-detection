@@ -1,5 +1,6 @@
 import numpy as np
 from models.nn import FeedForwardNetwork
+from models.logreg import LogisticRegression
 import torch
 from torch import nn
 from torch.utils.data import TensorDataset, DataLoader
@@ -9,7 +10,7 @@ import string
 from tqdm import tqdm
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
 config = {
     "bs":32,   # batch size
     "lr":0.003, # learning rate
@@ -59,11 +60,18 @@ if __name__ == "__main__":
     dataset = TensorDataset(X, y)
     dataloader = DataLoader(dataset, batch_size=config["bs"], shuffle=True)
 
-    model = FeedForwardNetwork(config["embedding_dim"], config["layer_widths"], config["output_dim"])
-    model.to(device)
+    ffnn = FeedForwardNetwork(config["embedding_dim"], config["layer_widths"], config["output_dim"])
+    logreg = LogisticRegression(config["embedding_dim"], config["output_dim"])
+    ffnn.to(device)
+    logreg.to(device)
     
-    train(model, dataloader)
-    torch.save(model.state_dict (), "./models/chkpts/ffnn")
+    print("Training Neural Network")
+    train(ffnn, dataloader)
+    print("Training Logistic Regression")
+    train(logreg, dataloader)
+    
+    torch.save(ffnn.state_dict (), "./models/chkpts/nn")
+    torch.save(logreg.state_dict(), "./models/chkpts/logreg")
 
 
 

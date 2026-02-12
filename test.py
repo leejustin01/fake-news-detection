@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import TensorDataset, DataLoader
 import numpy as np
 from models.nn import FeedForwardNetwork
+from models.logreg import LogisticRegression
 from train import config
 
 
@@ -32,9 +33,13 @@ def evaluate(model, dataloader):
     return running_acc/len(dataloader.dataset)
 
 if __name__ == "__main__":
-    model = FeedForwardNetwork(config["embedding_dim"], config["layer_widths"], config["output_dim"])
-    checkpoint = torch.load("./models/chkpts/ffnn", map_location=device)
-    model.load_state_dict(checkpoint)
+    ffnn = FeedForwardNetwork(config["embedding_dim"], config["layer_widths"], config["output_dim"])
+    logreg = LogisticRegression(config["embedding_dim"], config["output_dim"])
+    
+    ffnn_checkpoint = torch.load("./models/chkpts/nn", map_location=device)
+    logreg_checkpoint = torch.load("./models/chkpts/logreg", map_location=device)
+    ffnn.load_state_dict(ffnn_checkpoint)
+    logreg.load_state_dict(logreg_checkpoint)
     
     embeddings = np.load("./data/processed/X_train.npy")
     labels = np.load("./data/processed/y_train.npy")
@@ -45,6 +50,9 @@ if __name__ == "__main__":
     dataset = TensorDataset(X, y)
     dataloader = DataLoader(dataset, batch_size=config["bs"], shuffle=True)
 
-    test_acc = evaluate(model, dataloader)
+    ffnn_test_acc = evaluate(ffnn, dataloader)
+    logreg_test_acc = evaluate(logreg, dataloader)
 
-    print(f"Test Accuracy: {test_acc}")
+    print(f"Neural Network Test Accuracy: {ffnn_test_acc}")
+    print(f"Logistic Regression Test Accuracy: {logreg_test_acc}")
+    print(f"Diff: {ffnn_test_acc - logreg_test_acc}")
