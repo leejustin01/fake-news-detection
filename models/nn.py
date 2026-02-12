@@ -1,18 +1,26 @@
 import torch.nn as nn
 
-class ShallowNetwork(nn.Module):
-    def __init__(self, input_dim, hidden_width, output_dim):
-        super().__init__()
-        
-        self.hidden = nn.Linear(input_dim, hidden_width)
-        self.act = nn.ReLU()
-        self.output = nn.Linear(hidden_width, output_dim)
-        self.sigmoid = nn.Sigmoid()
+class FeedForwardNetwork(nn.Module):
 
-    def forward(self, x):
-        z1 = self.hidden(x)
-        a1 = self.act(z1)
-        out = self.output(a1)
-        prob = self.sigmoid(out)
-        return prob
+  def __init__(self, input_dim, layer_widths, output_dim, activation=nn.ReLU):
+    super().__init__()
+    assert(len(layer_widths) >= 1)
+    
+    self.act = activation()
+    
+    layers = []
+    prev = input_dim
+    for width in layer_widths:
+        layers.append(nn.Linear(prev, width))
+        layers.append(activation())
+        prev = width
+    layers.append(nn.Linear(prev, output_dim))
+    
+    self.hidden_layers = nn.Sequential(*layers)
+    self.sigmoid = nn.Sigmoid()
 
+
+  def forward(self, x):
+    out = self.hidden_layers(x)
+    prob = self.sigmoid(out)
+    return prob
